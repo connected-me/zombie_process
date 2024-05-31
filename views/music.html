@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const socket = io();
+        socket.on('initialMusicList', (musicList) => {
+            const table = document.getElementById('music-list-table');
+            musicList.forEach(music => {
+                const row = table.insertRow();
+                const filenameCell = row.insertCell(0);
+                const titleCell = row.insertCell(1);
+                const artistCell = row.insertCell(2);
+                const albumCell = row.insertCell(3);
+                const trackCell = row.insertCell(4);
+                const yearCell = row.insertCell(5);
+                const genreCell = row.insertCell(6);
+                const durationCell = row.insertCell(7);
+                filenameCell.innerText = music.filename;
+                titleCell.innerText = music.title;
+                artistCell.innerText = music.artist;
+                albumCell.innerText = music.album;
+                trackCell.innerText = music.track;
+                yearCell.innerText = music.year;
+                genreCell.innerText = music.genre;
+                durationCell.innerText = music.duration;
+            });
+        });
+        //todo add button to play song from list
+        socket.on('newSong', (music) => {
+            const table = document.getElementById('music-list-table');
+            const row = table.insertRow();
+            const filenameCell = row.insertCell(0);
+            const titleCell = row.insertCell(1);
+            const artistCell = row.insertCell(2);
+            const albumCell = row.insertCell(3);
+            const trackCell = row.insertCell(4);
+            const yearCell = row.insertCell(5);
+            const genreCell = row.insertCell(6);
+            const durationCell = row.insertCell(7);
+            filenameCell.innerText = music.filename;
+            titleCell.innerText = music.title;
+            artistCell.innerText = music.artist;
+            albumCell.innerText = music.album;
+            trackCell.innerText = music.track;
+            yearCell.innerText = music.year;
+            genreCell.innerText = music.genre;
+            durationCell.innerText = music.duration;
+        });
+    </script>
+    <h1>Music Player</h1>
+    <table id="music-list-table">
+        <tr>
+            <th>Filename</th>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Track</th>
+            <th>Year</th>
+            <th>Genre</th>
+            <th>Duration</th>
+        </tr>
+    </table>
+</body>
+

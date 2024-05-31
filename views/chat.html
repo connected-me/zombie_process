@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Overlay" />
+        <title>Overlay</title>
+        <style> 
+            body, html {
+                -ms-overflow-style: none;  /* IE, Edge */
+                scrollbar-width: none;  /* Firefox */
+                overflow: -moz-scrollbars-none;  /* Firefox */
+                overflow: hidden;  /* Chrome, Safari, Opera */
+                word-break: break-word;
+                /* overflow: hidden; */
+                max-height: 100vh;
+                width: 100vw;
+                margin: 0;
+                padding: 0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: lime;
+                color: white;
+            }
+            ul {
+                /* Display all unordered lists as tables */
+                position: top, left;
+                display: table;
+                list-style-type: none;
+                top: 0px;
+            }
+            li.full-message {
+                /* Display the message as a table row */
+                display:table-row;
+            }
+            div.message-timestamp {
+                display: none;
+            }
+            div.message-name {
+                text-align: right;
+            }
+            div.message-text {
+                text-align: left;
+            }
+            .message {
+                display: table-cell;
+                padding-right: 3px;
+                color: white;
+                font-size: 24px;
+                font-weight: bold;
+            }
+            div#messages-container {
+                overflow-y: hidden;
+                flex-direction: column-reverse;
+                /*
+                top: 30px;
+                width: 650px;
+                */
+            }
+        </style>
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    </head>
+    <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <script>
+            // Connect to the server using Socket.IO
+            var opts = {};
+            const socket = io();
+            socket.connect();
+            opts.delay = 8000;
+            // Function to update messages on the screen
+            function updateMessages(message) {
+                //grab the message list ID
+                const messagesList = document.querySelector('#messages-list');
+                const listItem = document.createElement('li');
+                listItem.classList.add('full-message');
+
+                //create div element for name
+                const nameElement = document.createElement('div');
+                nameElement.classList.add('message');
+                nameElement.classList.add('message-name');
+                const nameText = document.createTextNode(message.displayName);
+                nameElement.appendChild(nameText);
+                //create div element for message and add colon between user and message
+                listItem.appendChild(nameElement);
+                const colonText = document.createTextNode(': ');
+                nameElement.appendChild(colonText);
+
+                //create div element for message text
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.classList.add('message-text');
+                const messageText = document.createTextNode(message.text);
+                messageElement.appendChild(messageText);
+
+                //append elements to list item
+                listItem.appendChild(nameElement);
+                listItem.appendChild(messageElement);
+
+                //append the list item to the message list
+                messagesList.appendChild(listItem);
+                //scroll to the bottom of the message list
+                messagesList.scrollTop = messagesList.scrollHeight;
+                //limit the message list to 10 items
+                if(messagesList.children.length > 20){
+                    messagesList.removeChild(messagesList.children[0]);
+                }
+                // fade out effect for messages
+                listItem.style.transition = `opacity ${opts.delay / 1000}s linear`;
+                setTimeout(() => {
+                  listItem.style.opacity = 0;
+                  listItem.remove(this);
+                }, opts.delay);
+            }
+
+            // Socket.IO event handler for initial messages
+            socket.on('initialMessages', (messages) => {
+              const messagesList = document.getElementById('messages-list');
+              messagesList.innerHTML = ''; // Clear previous messages
+              messages.forEach(message => {
+                updateMessages(message);
+              });
+            });
+        
+            // Socket.IO event handler for new messages
+            socket.on('newMessage', (message) => {
+                //updateMessages(message[message.length-1]);
+                updateMessages(message);
+                console.log(message);
+            });
+        </script>
+            <div id="messages-container">
+                <ul id="messages-list"></ul>
+            </div>
+    </body>
+</html>

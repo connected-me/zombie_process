@@ -1,0 +1,29 @@
+{
+  "name": "attntoodetail-chatbot",
+  "version": "1.0.0",
+  "description": "bot for twitch chat",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --ignore 'persist/data/*' server.js",
+    "test": "node_modules/.bin/mocha"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "music-metadata": "^7.14.0",
+    "nodemon": "^3.1.0",
+    "path": "^0.12.7",
+    "socket.io": "^4.7.5",
+    "tmi.js": "^1.8.5"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2"
+  }
+}
